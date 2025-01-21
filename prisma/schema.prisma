@@ -21,11 +21,28 @@ model User {
   feedback            Feedback[]
   achievements        Achievement[]
   goals               Goal[]
+  is_emailVerified    Boolean          @default(false)
+  is_Deleted          Boolean          @default(false)
   createdAt           DateTime         @default(now())
   updatedAt           DateTime         @updatedAt
   KnowledgeGraph      KnowledgeGraph[]
   Notification        Notification[]
 }
+
+model VerifyUser {
+  id                String   @id @default(uuid())
+  email             String   @unique
+  otp               String
+  verificationTries Int      @default(0)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  is_Active  Boolean @default(true)
+  is_Deleted Boolean @default(false)
+
+  @@map(name: "verifyUser")
+}
+
 
 model Preferences {
   id              String @id @default(uuid())

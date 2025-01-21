@@ -82,11 +82,11 @@ export class AuthService {
           email,
         },
         select: {
-          userId: true,
+          id: true,
         },
       });
 
-      const token = await this.generateToken(user.userId);
+      const token = await this.generateToken(user.id);
       return {
         success: true,
         message: 'User verified!',
@@ -147,7 +147,7 @@ export class AuthService {
       throw new HttpException('Invalid password', HttpStatus.UNAUTHORIZED);
     }
 
-    const token = await this.generateToken(user.userId);
+    const token = await this.generateToken(user.id);
 
     return {
       success: true,
@@ -155,7 +155,6 @@ export class AuthService {
       data: {
         access_token: token,
         name: user.name,
-        profilePic: user.profilePic,
       },
     };
   }
@@ -169,7 +168,7 @@ export class AuthService {
   async findOneUserByID(userId: string) {
     return await this.prismaService.user.findUnique({
       where: {
-        userId,
+        id: userId,
       },
     });
   }
@@ -177,7 +176,7 @@ export class AuthService {
   async resetPassword(userId: string, resetPasswordDto: ResetPasswordDto) {
     const user = await this.prismaService.user.findUnique({
       where: {
-        userId,
+        id: userId,
       },
     });
 
@@ -207,7 +206,7 @@ export class AuthService {
     try {
       const updatedUser = await this.prismaService.user.update({
         where: {
-          userId,
+          id: userId,
         },
         data: {
           password: hashedPassword,
