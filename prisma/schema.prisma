@@ -1,0 +1,148 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                  String           @id @default(uuid())
+  name                String
+  email               String           @unique
+  password            String
+  socialLogin         Boolean          @default(false)
+  twoFactorEnabled    Boolean          @default(false)
+  onboardingCompleted Boolean          @default(false)
+  preferences         Preferences?
+  books               BookSelection[]
+  notes               Note[]
+  feedback            Feedback[]
+  achievements        Achievement[]
+  goals               Goal[]
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+  KnowledgeGraph      KnowledgeGraph[]
+  Notification        Notification[]
+}
+
+model Preferences {
+  id              String @id @default(uuid())
+  userId          String @unique
+  primaryGenre    String
+  weeklyGoals     Int
+  dailyCommitment Int // Time in minutes
+  user            User   @relation(fields: [userId], references: [id])
+}
+
+model Book {
+  id            String          @id @default(uuid())
+  title         String
+  author        String
+  genre         String
+  metadata      Json?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  adminId       String
+  admin         Admin           @relation(fields: [adminId], references: [id])
+  chapters      Chapter[]
+  BookSelection BookSelection[]
+}
+
+model Chapter {
+  id       String     @id @default(uuid())
+  title    String
+  content  String
+  bookId   String
+  book     Book       @relation(fields: [bookId], references: [id])
+  video    Video?
+  Note     Note[]
+  Feedback Feedback[]
+}
+
+model Video {
+  id        String   @id @default(uuid())
+  chapterId String   @unique
+  script    String
+  visuals   Json?
+  audioUrl  String
+  videoUrl  String
+  chapter   Chapter  @relation(fields: [chapterId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model BookSelection {
+  id         String   @id @default(uuid())
+  userId     String
+  bookId     String
+  user       User     @relation(fields: [userId], references: [id])
+  book       Book     @relation(fields: [bookId], references: [id])
+  selectedAt DateTime @default(now())
+}
+
+model Note {
+  id        String  @id @default(uuid())
+  userId    String
+  chapterId String
+  content   String
+  user      User    @relation(fields: [userId], references: [id])
+  chapter   Chapter @relation(fields: [chapterId], references: [id])
+}
+
+model KnowledgeGraph {
+  id     String @id @default(uuid())
+  userId String
+  data   Json
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  type      String // Email, Push
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Feedback {
+  id          String  @id @default(uuid())
+  userId      String
+  chapterId   String
+  rating      Int
+  comments    String?
+  contentType String // e.g., Video, Chapter, etc.
+  user        User    @relation(fields: [userId], references: [id])
+  chapter     Chapter @relation(fields: [chapterId], references: [id])
+}
+
+model Goal {
+  id          String  @id @default(uuid())
+  userId      String
+  description String
+  target      Int
+  progress    Int     @default(0)
+  completed   Boolean @default(false)
+  user        User    @relation(fields: [userId], references: [id])
+}
+
+model Achievement {
+  id          String   @id @default(uuid())
+  userId      String
+  title       String
+  description String
+  badgeUrl    String
+  earnedAt    DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id])
+}
+
+model Admin {
+  id       String @id @default(uuid())
+  name     String
+  email    String @unique
+  password String
+  books    Book[]
+}
