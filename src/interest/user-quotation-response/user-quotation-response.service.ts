@@ -3,30 +3,30 @@ import {
   HttpStatus,
   Injectable,
 } from '@nestjs/common';
-import { CreateUserTopicResponseDto } from './dto/create-user-topic-response.dto';
-import { UpdateUserTopicResponseDto } from './dto/update-user-topic-response.dto';
-import { PrismaService } from '../prisma/prisma.service';
+import { CreateUserQuotationResponseDto } from './dto/create-user-quotation-response.dto';
+import { UpdateUserQuotationResponseDto } from './dto/update-user-quotation-response.dto';
+import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()
-export class UserTopicResponseService {
+export class UserQuotationResponseService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(createUserTopicResponseDto: CreateUserTopicResponseDto) {
+  async create(dto: CreateUserQuotationResponseDto) {
     try {
-      if (!createUserTopicResponseDto) {
+      if (!dto) {
         throw new HttpException(
-          'CreateUserTopicResponseDto is required',
+          'CreateUserQuotationResponseDto is required',
           HttpStatus.BAD_REQUEST,
         );
       }
 
-      const createdResponse = await this.prisma.userTopicResponse.create({
-        data: createUserTopicResponseDto,
+      const createdResponse = await this.prisma.userQuotationResponse.create({
+        data: dto,
       });
 
       if (!createdResponse) {
         throw new HttpException(
-          'Failed to create a new user topic response',
+          'Failed to create a new user quotation response',
           HttpStatus.EXPECTATION_FAILED,
         );
       }
@@ -34,11 +34,11 @@ export class UserTopicResponseService {
       return {
         response: createdResponse,
         success: true,
-        message: 'User topic response created successfully',
+        message: 'User quotation response created successfully',
       };
     } catch (error) {
       throw new HttpException(
-        `Error creating user topic response: ${error.message}`,
+        `Error creating user quotation response: ${error.message}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -46,10 +46,10 @@ export class UserTopicResponseService {
 
   async findAll() {
     try {
-      const responses = await this.prisma.userTopicResponse.findMany();
+      const responses = await this.prisma.userQuotationResponse.findMany();
       if (!responses.length) {
         throw new HttpException(
-          'No user topic responses found',
+          'No user quotation responses found',
           HttpStatus.NO_CONTENT,
         );
       }
@@ -57,11 +57,11 @@ export class UserTopicResponseService {
       return {
         response: responses,
         success: true,
-        message: 'User topic responses fetched successfully',
+        message: 'User quotation responses fetched successfully',
       };
     } catch (error) {
       throw new HttpException(
-        `Error fetching user topic responses: ${error.message}`,
+        `Error fetching user quotation responses: ${error.message}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -70,19 +70,19 @@ export class UserTopicResponseService {
   async findOne(id: string) {
     if (!id) {
       throw new HttpException(
-        'Topic response ID is required',
+        'Quotation response ID is required',
         HttpStatus.BAD_REQUEST,
       );
     }
 
     try {
-      const response = await this.prisma.userTopicResponse.findUnique({
+      const response = await this.prisma.userQuotationResponse.findUnique({
         where: { id },
       });
 
       if (!response) {
         throw new HttpException(
-          `User topic response with ID ${id} not found`,
+          `User quotation response with ID ${id} not found`,
           HttpStatus.NOT_FOUND,
         );
       }
@@ -90,52 +90,49 @@ export class UserTopicResponseService {
       return {
         response,
         success: true,
-        message: 'User topic response fetched successfully',
+        message: 'User quotation response fetched successfully',
       };
     } catch (error) {
       throw new HttpException(
-        `Error fetching user topic response: ${error.message}`,
+        `Error fetching user quotation response: ${error.message}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
 
-  async update(
-    id: string,
-    updateUserTopicResponseDto: UpdateUserTopicResponseDto,
-  ) {
-    if (!id || !updateUserTopicResponseDto) {
+  async update(id: string, dto: UpdateUserQuotationResponseDto) {
+    if (!id || !dto) {
       throw new HttpException(
-        'Topic response ID and update data are required',
+        'Quotation response ID and update data are required',
         HttpStatus.BAD_REQUEST,
       );
     }
 
     try {
-      const existingResponse = await this.prisma.userTopicResponse.findUnique({
+      const existingResponse = await this.prisma.userQuotationResponse.findUnique({
         where: { id },
       });
 
       if (!existingResponse) {
         throw new HttpException(
-          `User topic response with ID ${id} not found`,
+          `User quotation response with ID ${id} not found`,
           HttpStatus.NOT_FOUND,
         );
       }
 
-      const updatedResponse = await this.prisma.userTopicResponse.update({
+      const updatedResponse = await this.prisma.userQuotationResponse.update({
         where: { id },
-        data: updateUserTopicResponseDto,
+        data: dto,
       });
 
       return {
         response: updatedResponse,
         success: true,
-        message: 'User topic response updated successfully',
+        message: 'User quotation response updated successfully',
       };
     } catch (error) {
       throw new HttpException(
-        `Error updating user topic response: ${error.message}`,
+        `Error updating user quotation response: ${error.message}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -144,35 +141,35 @@ export class UserTopicResponseService {
   async remove(id: string) {
     if (!id) {
       throw new HttpException(
-        'Topic response ID is required',
+        'Quotation response ID is required',
         HttpStatus.BAD_REQUEST,
       );
     }
 
     try {
-      const existingResponse = await this.prisma.userTopicResponse.findUnique({
+      const existingResponse = await this.prisma.userQuotationResponse.findUnique({
         where: { id },
       });
 
       if (!existingResponse) {
         throw new HttpException(
-          `User topic response with ID ${id} not found`,
+          `User quotation response with ID ${id} not found`,
           HttpStatus.NOT_FOUND,
         );
       }
 
-      const deletedResponse = await this.prisma.userTopicResponse.delete({
+      const deletedResponse = await this.prisma.userQuotationResponse.delete({
         where: { id },
       });
 
       return {
         response: deletedResponse,
         success: true,
-        message: 'User topic response deleted successfully',
+        message: 'User quotation response deleted successfully',
       };
     } catch (error) {
       throw new HttpException(
-        `Error deleting user topic response: ${error.message}`,
+        `Error deleting user quotation response: ${error.message}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

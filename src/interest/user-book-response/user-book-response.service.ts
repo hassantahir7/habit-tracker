@@ -3,30 +3,30 @@ import {
   HttpStatus,
   Injectable,
 } from '@nestjs/common';
-import { CreateUserQuotationResponseDto } from './dto/create-user-quotation-response.dto';
-import { UpdateUserQuotationResponseDto } from './dto/update-user-quotation-response.dto';
-import { PrismaService } from '../prisma/prisma.service';
+import { CreateUserBookResponseDto } from './dto/create-user-book-response.dto';
+import { UpdateUserBookResponseDto } from './dto/update-user-book-response.dto';
+import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()
-export class UserQuotationResponseService {
+export class UserBookResponseService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(dto: CreateUserQuotationResponseDto) {
+  async create(createUserBookResponseDto: CreateUserBookResponseDto) {
     try {
-      if (!dto) {
+      if (!createUserBookResponseDto) {
         throw new HttpException(
-          'CreateUserQuotationResponseDto is required',
+          'CreateUserBookResponseDto is not provided',
           HttpStatus.BAD_REQUEST,
         );
       }
 
-      const createdResponse = await this.prisma.userQuotationResponse.create({
-        data: dto,
+      const createdResponse = await this.prisma.userBookResponse.create({
+        data: createUserBookResponseDto,
       });
 
       if (!createdResponse) {
         throw new HttpException(
-          'Failed to create a new user quotation response',
+          'Failed to create a new user book response',
           HttpStatus.EXPECTATION_FAILED,
         );
       }
@@ -34,11 +34,11 @@ export class UserQuotationResponseService {
       return {
         response: createdResponse,
         success: true,
-        message: 'User quotation response created successfully',
+        message: 'User book response created successfully',
       };
     } catch (error) {
       throw new HttpException(
-        `Error creating user quotation response: ${error.message}`,
+        `Unable to create user book response: ${error.message}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -46,10 +46,10 @@ export class UserQuotationResponseService {
 
   async findAll() {
     try {
-      const responses = await this.prisma.userQuotationResponse.findMany();
+      const responses = await this.prisma.userBookResponse.findMany();
       if (!responses.length) {
         throw new HttpException(
-          'No user quotation responses found',
+          'No user book responses found',
           HttpStatus.NO_CONTENT,
         );
       }
@@ -57,11 +57,11 @@ export class UserQuotationResponseService {
       return {
         response: responses,
         success: true,
-        message: 'User quotation responses fetched successfully',
+        message: 'User book responses fetched successfully',
       };
     } catch (error) {
       throw new HttpException(
-        `Error fetching user quotation responses: ${error.message}`,
+        `Unable to fetch user book responses: ${error.message}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -70,19 +70,19 @@ export class UserQuotationResponseService {
   async findOne(id: string) {
     if (!id) {
       throw new HttpException(
-        'Quotation response ID is required',
+        'Response ID is not provided',
         HttpStatus.BAD_REQUEST,
       );
     }
 
     try {
-      const response = await this.prisma.userQuotationResponse.findUnique({
+      const response = await this.prisma.userBookResponse.findUnique({
         where: { id },
       });
 
       if (!response) {
         throw new HttpException(
-          `User quotation response with ID ${id} not found`,
+          `User book response with ID ${id} not found`,
           HttpStatus.NOT_FOUND,
         );
       }
@@ -90,49 +90,49 @@ export class UserQuotationResponseService {
       return {
         response,
         success: true,
-        message: 'User quotation response fetched successfully',
+        message: 'User book response fetched successfully',
       };
     } catch (error) {
       throw new HttpException(
-        `Error fetching user quotation response: ${error.message}`,
+        `Unable to fetch user book response: ${error.message}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
 
-  async update(id: string, dto: UpdateUserQuotationResponseDto) {
-    if (!id || !dto) {
+  async update(id: string, updateUserBookResponseDto: UpdateUserBookResponseDto) {
+    if (!id || !updateUserBookResponseDto) {
       throw new HttpException(
-        'Quotation response ID and update data are required',
+        'Response ID or update data is not provided',
         HttpStatus.BAD_REQUEST,
       );
     }
 
     try {
-      const existingResponse = await this.prisma.userQuotationResponse.findUnique({
+      const response = await this.prisma.userBookResponse.findUnique({
         where: { id },
       });
 
-      if (!existingResponse) {
+      if (!response) {
         throw new HttpException(
-          `User quotation response with ID ${id} not found`,
+          `User book response with ID ${id} not found`,
           HttpStatus.NOT_FOUND,
         );
       }
 
-      const updatedResponse = await this.prisma.userQuotationResponse.update({
+      const updatedResponse = await this.prisma.userBookResponse.update({
         where: { id },
-        data: dto,
+        data: updateUserBookResponseDto,
       });
 
       return {
         response: updatedResponse,
         success: true,
-        message: 'User quotation response updated successfully',
+        message: 'User book response updated successfully',
       };
     } catch (error) {
       throw new HttpException(
-        `Error updating user quotation response: ${error.message}`,
+        `Unable to update user book response: ${error.message}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -141,35 +141,35 @@ export class UserQuotationResponseService {
   async remove(id: string) {
     if (!id) {
       throw new HttpException(
-        'Quotation response ID is required',
+        'Response ID is not provided',
         HttpStatus.BAD_REQUEST,
       );
     }
 
     try {
-      const existingResponse = await this.prisma.userQuotationResponse.findUnique({
+      const response = await this.prisma.userBookResponse.findUnique({
         where: { id },
       });
 
-      if (!existingResponse) {
+      if (!response) {
         throw new HttpException(
-          `User quotation response with ID ${id} not found`,
+          `User book response with ID ${id} not found`,
           HttpStatus.NOT_FOUND,
         );
       }
 
-      const deletedResponse = await this.prisma.userQuotationResponse.delete({
+      const deletedResponse = await this.prisma.userBookResponse.delete({
         where: { id },
       });
 
       return {
         response: deletedResponse,
         success: true,
-        message: 'User quotation response deleted successfully',
+        message: 'User book response deleted successfully',
       };
     } catch (error) {
       throw new HttpException(
-        `Error deleting user quotation response: ${error.message}`,
+        `Unable to delete user book response: ${error.message}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

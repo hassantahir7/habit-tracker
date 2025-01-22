@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { CreateTopicsDto } from './dto/create-topic.dto';
 import { UpdateTopicDto } from './dto/update-topic.dto';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()
 export class TopicService {

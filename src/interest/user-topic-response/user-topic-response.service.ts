@@ -3,30 +3,30 @@ import {
   HttpStatus,
   Injectable,
 } from '@nestjs/common';
-import { CreateUserBookResponseDto } from './dto/create-user-book-response.dto';
-import { UpdateUserBookResponseDto } from './dto/update-user-book-response.dto';
-import { PrismaService } from '../prisma/prisma.service';
+import { CreateUserTopicResponseDto } from './dto/create-user-topic-response.dto';
+import { UpdateUserTopicResponseDto } from './dto/update-user-topic-response.dto';
+import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()
-export class UserBookResponseService {
+export class UserTopicResponseService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(createUserBookResponseDto: CreateUserBookResponseDto) {
+  async create(createUserTopicResponseDto: CreateUserTopicResponseDto) {
     try {
-      if (!createUserBookResponseDto) {
+      if (!createUserTopicResponseDto) {
         throw new HttpException(
-          'CreateUserBookResponseDto is not provided',
+          'CreateUserTopicResponseDto is required',
           HttpStatus.BAD_REQUEST,
         );
       }
 
-      const createdResponse = await this.prisma.userBookResponse.create({
-        data: createUserBookResponseDto,
+      const createdResponse = await this.prisma.userTopicResponse.create({
+        data: createUserTopicResponseDto,
       });
 
       if (!createdResponse) {
         throw new HttpException(
-          'Failed to create a new user book response',
+          'Failed to create a new user topic response',
           HttpStatus.EXPECTATION_FAILED,
         );
       }
@@ -34,11 +34,11 @@ export class UserBookResponseService {
       return {
         response: createdResponse,
         success: true,
-        message: 'User book response created successfully',
+        message: 'User topic response created successfully',
       };
     } catch (error) {
       throw new HttpException(
-        `Unable to create user book response: ${error.message}`,
+        `Error creating user topic response: ${error.message}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -46,10 +46,10 @@ export class UserBookResponseService {
 
   async findAll() {
     try {
-      const responses = await this.prisma.userBookResponse.findMany();
+      const responses = await this.prisma.userTopicResponse.findMany();
       if (!responses.length) {
         throw new HttpException(
-          'No user book responses found',
+          'No user topic responses found',
           HttpStatus.NO_CONTENT,
         );
       }
@@ -57,11 +57,11 @@ export class UserBookResponseService {
       return {
         response: responses,
         success: true,
-        message: 'User book responses fetched successfully',
+        message: 'User topic responses fetched successfully',
       };
     } catch (error) {
       throw new HttpException(
-        `Unable to fetch user book responses: ${error.message}`,
+        `Error fetching user topic responses: ${error.message}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -70,19 +70,19 @@ export class UserBookResponseService {
   async findOne(id: string) {
     if (!id) {
       throw new HttpException(
-        'Response ID is not provided',
+        'Topic response ID is required',
         HttpStatus.BAD_REQUEST,
       );
     }
 
     try {
-      const response = await this.prisma.userBookResponse.findUnique({
+      const response = await this.prisma.userTopicResponse.findUnique({
         where: { id },
       });
 
       if (!response) {
         throw new HttpException(
-          `User book response with ID ${id} not found`,
+          `User topic response with ID ${id} not found`,
           HttpStatus.NOT_FOUND,
         );
       }
@@ -90,49 +90,52 @@ export class UserBookResponseService {
       return {
         response,
         success: true,
-        message: 'User book response fetched successfully',
+        message: 'User topic response fetched successfully',
       };
     } catch (error) {
       throw new HttpException(
-        `Unable to fetch user book response: ${error.message}`,
+        `Error fetching user topic response: ${error.message}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
 
-  async update(id: string, updateUserBookResponseDto: UpdateUserBookResponseDto) {
-    if (!id || !updateUserBookResponseDto) {
+  async update(
+    id: string,
+    updateUserTopicResponseDto: UpdateUserTopicResponseDto,
+  ) {
+    if (!id || !updateUserTopicResponseDto) {
       throw new HttpException(
-        'Response ID or update data is not provided',
+        'Topic response ID and update data are required',
         HttpStatus.BAD_REQUEST,
       );
     }
 
     try {
-      const response = await this.prisma.userBookResponse.findUnique({
+      const existingResponse = await this.prisma.userTopicResponse.findUnique({
         where: { id },
       });
 
-      if (!response) {
+      if (!existingResponse) {
         throw new HttpException(
-          `User book response with ID ${id} not found`,
+          `User topic response with ID ${id} not found`,
           HttpStatus.NOT_FOUND,
         );
       }
 
-      const updatedResponse = await this.prisma.userBookResponse.update({
+      const updatedResponse = await this.prisma.userTopicResponse.update({
         where: { id },
-        data: updateUserBookResponseDto,
+        data: updateUserTopicResponseDto,
       });
 
       return {
         response: updatedResponse,
         success: true,
-        message: 'User book response updated successfully',
+        message: 'User topic response updated successfully',
       };
     } catch (error) {
       throw new HttpException(
-        `Unable to update user book response: ${error.message}`,
+        `Error updating user topic response: ${error.message}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -141,35 +144,35 @@ export class UserBookResponseService {
   async remove(id: string) {
     if (!id) {
       throw new HttpException(
-        'Response ID is not provided',
+        'Topic response ID is required',
         HttpStatus.BAD_REQUEST,
       );
     }
 
     try {
-      const response = await this.prisma.userBookResponse.findUnique({
+      const existingResponse = await this.prisma.userTopicResponse.findUnique({
         where: { id },
       });
 
-      if (!response) {
+      if (!existingResponse) {
         throw new HttpException(
-          `User book response with ID ${id} not found`,
+          `User topic response with ID ${id} not found`,
           HttpStatus.NOT_FOUND,
         );
       }
 
-      const deletedResponse = await this.prisma.userBookResponse.delete({
+      const deletedResponse = await this.prisma.userTopicResponse.delete({
         where: { id },
       });
 
       return {
         response: deletedResponse,
         success: true,
-        message: 'User book response deleted successfully',
+        message: 'User topic response deleted successfully',
       };
     } catch (error) {
       throw new HttpException(
-        `Unable to delete user book response: ${error.message}`,
+        `Error deleting user topic response: ${error.message}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
