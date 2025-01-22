@@ -69,7 +69,7 @@ export class AuthService {
         data: { name: userCreated.name, email: userCreated.email },
       };
     } catch (error) {
-      throw new HttpException(`Something went wrong`, 500);
+      throw new HttpException(`Something went wrong ${error}`, 500);
     }
   }
 

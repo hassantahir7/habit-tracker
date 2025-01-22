@@ -15,6 +15,7 @@ model User {
   socialLogin         Boolean                 @default(false)
   twoFactorEnabled    Boolean                 @default(false)
   onboardingCompleted Boolean                 @default(false)
+  subscription        Boolean                 @default(false)
   preferences         Preferences?
   age                 Int?
   gender              String? // e.g., Male, Female, Non-binary
@@ -160,8 +161,6 @@ model Achievement {
   user        User     @relation(fields: [userId], references: [id])
 }
 
-
-
 model Quotation {
   id        String                  @id @default(uuid())
   content   String
@@ -173,7 +172,6 @@ model Topics {
   id                String                  @id @default(uuid())
   content           String
   genre             String
-  responses         UserQuotationResponse[]
   UserTopicResponse UserTopicResponse[]
 }
 
@@ -191,8 +189,6 @@ model UserQuotationResponse {
   response    String
   user        User      @relation(fields: [userId], references: [id])
   quotation   Quotation @relation(fields: [quotationId], references: [id])
-  Topics      Topics?   @relation(fields: [topicsId], references: [id])
-  topicsId    String?
 }
 
 model UserBookResponse {
