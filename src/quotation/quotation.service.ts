@@ -7,8 +7,6 @@ import {
 import { CreateQuotationDto } from './dto/create-quotation.dto';
 import { UpdateQuotationDto } from './dto/update-quotation.dto';
 import { PrismaService } from '../prisma/prisma.service';
-import axios from 'axios';
-import { response } from 'express';
 
 @Injectable()
 export class QuotationService {
