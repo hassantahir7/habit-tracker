@@ -8,25 +8,31 @@ datasource db {
 }
 
 model User {
-  id                  String           @id @default(uuid())
+  id                  String                  @id @default(uuid())
   name                String
-  email               String           @unique
+  email               String                  @unique
   password            String
-  socialLogin         Boolean          @default(false)
-  twoFactorEnabled    Boolean          @default(false)
-  onboardingCompleted Boolean          @default(false)
+  socialLogin         Boolean                 @default(false)
+  twoFactorEnabled    Boolean                 @default(false)
+  onboardingCompleted Boolean                 @default(false)
   preferences         Preferences?
+  age                 Int?
+  gender              String? // e.g., Male, Female, Non-binary
+  interests           UserInterest[]
+  responses           UserQuotationResponse[]
   books               BookSelection[]
   notes               Note[]
   feedback            Feedback[]
   achievements        Achievement[]
   goals               Goal[]
-  is_emailVerified    Boolean          @default(false)
-  is_Deleted          Boolean          @default(false)
-  createdAt           DateTime         @default(now())
-  updatedAt           DateTime         @updatedAt
+  is_emailVerified    Boolean                 @default(false)
+  is_Deleted          Boolean                 @default(false)
+  createdAt           DateTime                @default(now())
+  updatedAt           DateTime                @updatedAt
   KnowledgeGraph      KnowledgeGraph[]
   Notification        Notification[]
+  UserBookResponse    UserBookResponse[]
+  UserTopicResponse   UserTopicResponse[]
 }
 
 model VerifyUser {
@@ -43,7 +49,6 @@ model VerifyUser {
   @@map(name: "verifyUser")
 }
 
-
 model Preferences {
   id              String @id @default(uuid())
   userId          String @unique
@@ -54,17 +59,16 @@ model Preferences {
 }
 
 model Book {
-  id            String          @id @default(uuid())
-  title         String
-  author        String
-  genre         String
-  metadata      Json?
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  adminId       String
-  admin         Admin           @relation(fields: [adminId], references: [id])
-  chapters      Chapter[]
-  BookSelection BookSelection[]
+  id               String             @id @default(uuid())
+  title            String
+  author           String
+  genre            String
+  metadata         Json?
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  chapters         Chapter[]
+  BookSelection    BookSelection[]
+  UserBookResponse UserBookResponse[]
 }
 
 model Chapter {
@@ -156,10 +160,55 @@ model Achievement {
   user        User     @relation(fields: [userId], references: [id])
 }
 
-model Admin {
+
+
+model Quotation {
+  id        String                  @id @default(uuid())
+  content   String
+  genre     String
+  responses UserQuotationResponse[]
+}
+
+model Topics {
+  id                String                  @id @default(uuid())
+  content           String
+  genre             String
+  responses         UserQuotationResponse[]
+  UserTopicResponse UserTopicResponse[]
+}
+
+model UserInterest {
   id       String @id @default(uuid())
-  name     String
-  email    String @unique
-  password String
-  books    Book[]
+  userId   String
+  interest String
+  user     User   @relation(fields: [userId], references: [id])
+}
+
+model UserQuotationResponse {
+  id          String    @id @default(uuid())
+  userId      String
+  quotationId String
+  response    String
+  user        User      @relation(fields: [userId], references: [id])
+  quotation   Quotation @relation(fields: [quotationId], references: [id])
+  Topics      Topics?   @relation(fields: [topicsId], references: [id])
+  topicsId    String?
+}
+
+model UserBookResponse {
+  id       String @id @default(uuid())
+  userId   String
+  BookId   String
+  response String
+  user     User   @relation(fields: [userId], references: [id])
+  book     Book   @relation(fields: [BookId], references: [id])
+}
+
+model UserTopicResponse {
+  id       String @id @default(uuid())
+  userId   String
+  topicId  String
+  response String
+  user     User   @relation(fields: [userId], references: [id])
+  topic    Topics @relation(fields: [topicId], references: [id])
 }

@@ -5,6 +5,9 @@ import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { MailerModule } from './mailer/mailer.module';
 import { ConfigModule } from '@nestjs/config';
+import { BooksModule } from './books/books.module';
+import { QuotationModule } from './quotation/quotation.module';
+import { TopicModule } from './topic/topic.module';
 
 @Module({
   imports: [
@@ -12,6 +15,9 @@ import { ConfigModule } from '@nestjs/config';
     PrismaModule,
     AuthModule,
     MailerModule,
+    BooksModule,
+    QuotationModule,
+    TopicModule,
   ],
   controllers: [AppController],
   providers: [AppService],

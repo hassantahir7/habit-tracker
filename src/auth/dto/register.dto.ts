@@ -5,7 +5,7 @@ import {
   IsEmail,
   Matches,
   IsOptional,
-  IsUrl,
+  IsBoolean,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -41,27 +41,32 @@ export class RegisterDto {
   })
   password: string;
 
-  // @ApiProperty({
-  //   example: '+923001234567',
-  //   description:
-  //     'Optional contact number in the format +923001234567 or 03001234567, 10-15 digits',
-  //   required: false,
-  // })
-  // @IsString()
-  // @IsOptional()
-  // @Matches(/^\+?\d{10,15}$/, {
-  //   message:
-  //     'Invalid Phone Number: Phone Number should be in the format +923001234567 or 03001234567 and between 10-15 digits',
-  // })
-  // contactNumber: string;
+  @ApiProperty({
+    example: false,
+    description: 'Flag to indicate if the user registered via social login',
+    required: false,
+  })
+  @IsOptional()
+  @IsBoolean()
+  socialLogin?: boolean;
 
-  // @ApiProperty({
-  //   example: '1995-08-15',
-  //   description: 'Optional date of birth in ISO format (YYYY-MM-DD)',
-  //   required: false,
-  // })
-  // @IsOptional()
-  // dateOfBirth: string;
+  @ApiProperty({
+    example: false,
+    description: 'Flag to indicate if two-factor authentication is enabled',
+    required: false,
+  })
+  @IsOptional()
+  @IsBoolean()
+  twoFactorEnabled?: boolean;
+
+  @ApiProperty({
+    example: false,
+    description: 'Flag to indicate if onboarding has been completed',
+    required: false,
+  })
+  @IsOptional()
+  @IsBoolean()
+  onboardingCompleted?: boolean;
 
   @ApiProperty({
     example: false,
@@ -69,16 +74,6 @@ export class RegisterDto {
     required: false,
   })
   @IsOptional()
-  subscription: boolean;
-
-
-  // @ApiProperty({
-  //   example: 'https://example.com/profile-pic.jpg',
-  //   description: 'Optional URL to the profile picture',
-  //   required: false,
-  // })
-  // @IsOptional()
-  // @IsString()
-  // @IsUrl()
-  // profilePic: string;
+  @IsBoolean()
+  subscription?: boolean;
 }
